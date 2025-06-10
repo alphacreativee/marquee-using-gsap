@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smooth GSAP Marquee</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 40px;
+        font-family: Arial, sans-serif;
+        background: #f0f0f0;
+      }
+
+      .marquee-container {
+        overflow: hidden;
+        white-space: nowrap;
+        border: 2px solid #333;
+        background: white;
+        margin: 20px 0;
+        position: relative;
+      }
+
+      .marquee-content {
+        display: inline-block;
+        white-space: nowrap;
+        will-change: transform;
+        backface-visibility: hidden;
+      }
+
+      .marquee-text {
+        display: inline-block;
+        padding: 20px 40px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      /* Different styles for demo */
+      .marquee-1 {
+        background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+      }
+      .marquee-2 {
+        background: linear-gradient(90deg, #4ecdc4, #44a08d);
+      }
+      .marquee-3 {
+        background: linear-gradient(90deg, #45b7d1, #96c93d);
+      }
+
+      .marquee-1 .marquee-text {
+        color: white;
+      }
+      .marquee-2 .marquee-text {
+        color: white;
+      }
+      .marquee-3 .marquee-text {
+        color: white;
+      }
+
+      .info {
+        text-align: center;
+        margin: 20px 0;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Smooth GSAP Marquee</h1>
+
+    <div class="info">Hover to pause</div>
+
+    <div class="marquee-container marquee-1" data-speed="50">
+      <div class="marquee-content">
+        <span class="marquee-text">🎉 Welcome to our website!</span>
+        <span class="marquee-text">⭐ Special offers available!</span>
+        <span class="marquee-text">🛍️ Shop now and save!</span>
+      </div>
+    </div>
+
+    <div class="marquee-container marquee-2" data-speed="30">
+      <div class="marquee-content">
+        <span class="marquee-text">⚡ Fast shipping</span>
+        <span class="marquee-text">🔧 24/7 Support</span>
+        <span class="marquee-text">💰 Money back guarantee</span>
+        <span class="marquee-text">🚚 Free delivery</span>
+      </div>
+    </div>
+
+    <div class="marquee-container marquee-3" data-speed="70">
+      <div class="marquee-content">
+        <span class="marquee-text">🚀 New products launching!</span>
+        <span class="marquee-text">📱 Mobile app available</span>
+        <span class="marquee-text">🎯 Stay tuned for updates!</span>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".marquee-container").forEach((container) => {
+          const content = container.querySelector(".marquee-content");
+          const texts = [...container.querySelectorAll(".marquee-text")];
+          const speed = parseFloat(container.getAttribute("data-speed")) || 50;
+
+          // Calculate total width of original content
+          let totalWidth = 0;
+          texts.forEach((text) => (totalWidth += text.offsetWidth));
+
+          // Create copies for seamless loop
+          const containerWidth = container.offsetWidth;
+          const copiesNeeded = Math.ceil(containerWidth / totalWidth) + 2;
+
+          for (let i = 0; i < copiesNeeded; i++) {
+            texts.forEach((text) => {
+              content.appendChild(text.cloneNode(true));
+            });
+          }
+
+          // Setup animation
+          gsap.set(content, {
+            willChange: "transform",
+            force3D: true,
+          });
+
+          const tl = gsap.timeline({ repeat: -1 });
+          tl.fromTo(
+            content,
+            { x: 0 },
+            {
+              x: -totalWidth,
+              duration: totalWidth / speed,
+              ease: "none",
+              force3D: true,
+            }
+          );
+
+          // Hover events
+          container.addEventListener("mouseenter", () => tl.pause());
+          container.addEventListener("mouseleave", () => tl.resume());
+        });
+      });
+    </script>
+  </body>
+</html>
